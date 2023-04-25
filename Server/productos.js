@@ -13,27 +13,28 @@ class ProductManager {
   addProduct({ title, description, price, thumbnail, stock, code }) {
 
     let id = 1
-
-    if (this.products.length === 0) {
-      id=1
-    } else {
-      let lastProduct = this.products[this.products.length - 1]
-      id = lastProduct.id + 1
+    
+    if (this.products.length !== 0) {
+    
+    let lastProduct = this.products[this.products.length - 1]
+    
+    id = lastProduct.id + 1
+    
     }
-
+    
+    if (this.products.some(product => product.code === code)) {
+    
+    console.error('Ya existe un producto con el mismo código')
+    
+    } else {
+    
     let product = { title, description, price, thumbnail, stock, code, id }
-
-    // for ( product in this.products) {
-    //   if (product.code === code){
-    //     console.error('Ya existe un producto con el mismo codigo')
-    //   } else {
-    //     this.products.push(product)
-    //   }
-    // }
-
+    
     this.products.push(product)
-
-  }
+    
+    }
+    
+    }
 
   getProductById(product_id) {
     
