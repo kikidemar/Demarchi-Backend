@@ -120,10 +120,10 @@ class ProductManager {
 
 }
 
-
+  let manager = new ProductManager('data/products.json')
 
 async function product() {
-  let product = new ProductManager('data/products.json')
+
 
   await product.addProduct({ title: 'coca', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc123', stock: 25})
   await product.addProduct({ title: 'sprite', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc124', stock: 25})
@@ -142,4 +142,6 @@ async function product() {
 
 }
 
-product()
+// product()
+
+export default manager
