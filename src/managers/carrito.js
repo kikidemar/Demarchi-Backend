@@ -15,11 +15,11 @@ init(path) {
   if (!file) {
     fs.writeFileSync(path, '[]' )
     console.log('file created at path: ' + this.path)
-    return 'file created at path: ' + this.path
+    return 201
   } else {
     this.carts = JSON.parse(fs.readFileSync(path, 'UTF-8'))
     console.log('data recovered')
-    return 'data recovered'
+    return 200
   }
 
 }

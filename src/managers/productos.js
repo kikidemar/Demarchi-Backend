@@ -120,7 +120,7 @@ class ProductManager {
 
 }
 
-  let manager = new ProductManager('data/products.json')
+  let manager = new ProductManager('./src/data/products.json')
 
 async function product() {
 
