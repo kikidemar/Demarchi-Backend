@@ -5,8 +5,8 @@
   "main": "productos.js",
   "type": "module",
   "scripts": {
-    "start": "node ./server.js",
-    "dev": "nodemon ./server.js"
+    "start": "node ./Server/server.js",
+    "dev": "nodemon ./Server/server.js"
   },
   "repository": {
     "type": "git",
