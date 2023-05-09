@@ -83,5 +83,42 @@ async addCart( {productId, quantity} ) {
   }
   }
 
+  async updateCart(id,data) {
+    try {
+        let one = this.getCartById(id)
+        for (let prop in data) {
+            one[prop] = data[prop]
+        }
+        let data_json = JSON.stringify(this.carts,null,2)
+        await fs.promises.writeFile(this.path,data_json)
+        console.log('updated cart: '+id)
+        return 200
+    } catch(error) {
+        console.log(error)
+        return null
+    }
 }
 
+async deleteCart(id) {
+  try {
+      let one = this.carts.find(each=>each.id===id)
+      if (one) {
+          this.carts = this.carts.filter(each=>each.id!==id)
+          let data_json = JSON.stringify(this.carts,null,2)
+          await fs.promises.writeFile(this.path,data_json)
+          console.log('delete cart: '+id)
+          return 200
+      }
+      console.log('not found')
+      return null
+  } catch(error) {
+      console.log(error)
+      return null
+  }
+}
+
+}
+
+let manager = new CartManager('./src/data/carts.json')
+
+export default manager

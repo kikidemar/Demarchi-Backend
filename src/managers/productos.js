@@ -13,11 +13,11 @@ class ProductManager {
     if (!file) {
       fs.writeFileSync(path, '[]' )
       console.log('file created at path: ' + this.path)
-      return 'file created at path: ' + this.path
+      return 201
     } else {
       this.products = JSON.parse(fs.readFileSync(path, 'UTF-8'))
       console.log('data recovered')
-      return 'data recovered'
+      return 200
     }
 
   }
@@ -49,7 +49,7 @@ class ProductManager {
   
       if (this.products.some(product => product.code === code)) {
         console.error('Ya existe un producto con el mismo código')
-        return
+        return 400
       } else {
         this.products.push(product)
   
@@ -57,7 +57,7 @@ class ProductManager {
   
         await fs.promises.writeFile(this.path, productJSON)
         console.log('Product created: ' + product.id)
-        return 'Product created: ' + product.id
+        return 201
       }
     } catch (error) {
       console.log(error)
@@ -96,10 +96,10 @@ class ProductManager {
       let productJSON = JSON.stringify(this.products, null, 2 )
       await fs.promises.writeFile(this.path, productJSON)
       console.log('UpdateProduct: done')
-      return 'UpdateProduct: done'
+      return 200
     } catch(error) {
       console.log(error)
-      return 'updateProduct: error'
+      return null
     }
   }
 
@@ -111,10 +111,10 @@ class ProductManager {
 
       await fs.promises.writeFile(this.path, productJSON)
       console.log('delete product: done')
-      return 'delete product: done'
+      return 200
     } catch(err) {
       console.log(err)
-      return 'deleteProduct: error'
+      return null
     }
   }
 
@@ -122,26 +122,29 @@ class ProductManager {
 
   let manager = new ProductManager('./src/data/products.json')
 
-async function product() {
+  export default manager
 
 
-  await product.addProduct({ title: 'coca', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc123', stock: 25})
-  await product.addProduct({ title: 'sprite', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc124', stock: 25})
-  await product.addProduct({ title: 'fanta', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc125', stock: 25})
-  await product.addProduct({ title: 'pomelo', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc126', stock: 25})
-  await product.addProduct({ title: 'agua', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc127', stock: 25})
-  await product.addProduct({ title: 'fernet', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc128', stock: 25})
-  await product.addProduct({ title: 'gancia', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc129', stock: 25})
-  await product.addProduct({ title: 'redbull', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc130', stock: 25})
-  await product.addProduct({ title: 'speed', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc131', stock: 25})
-  await product.addProduct({ title: 'aquarius', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc132', stock: 25})
-  await product.getProductById(9)
-  await product.updateProduct(9, {title: 'monster'})
-  await product.deleteProduct(10)
-  await product.getProducts();
 
-}
+// async function product() {
+
+
+//   await product.addProduct({ title: 'coca', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc123', stock: 25})
+//   await product.addProduct({ title: 'sprite', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc124', stock: 25})
+//   await product.addProduct({ title: 'fanta', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc125', stock: 25})
+//   await product.addProduct({ title: 'pomelo', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc126', stock: 25})
+//   await product.addProduct({ title: 'agua', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc127', stock: 25})
+//   await product.addProduct({ title: 'fernet', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc128', stock: 25})
+//   await product.addProduct({ title: 'gancia', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc129', stock: 25})
+//   await product.addProduct({ title: 'redbull', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc130', stock: 25})
+//   await product.addProduct({ title: 'speed', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc131', stock: 25})
+//   await product.addProduct({ title: 'aquarius', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc132', stock: 25})
+//   await product.getProductById(9)
+//   await product.updateProduct(9, {title: 'monster'})
+//   await product.deleteProduct(10)
+//   await product.getProducts();
+
+// }
 
 // product()
 
-export default manager
