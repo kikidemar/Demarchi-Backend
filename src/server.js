@@ -1,5 +1,4 @@
 import express from 'express';
-import manager from './managers/productos.js'
 import index_router from './router/index_router.js';
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'

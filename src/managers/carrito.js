@@ -1,5 +1,4 @@
 import fs from 'fs';
-import manager from 'productos.js'
 
 class CartManager {
   constructor(path){
@@ -25,31 +24,25 @@ init(path) {
 }
 
 
-async addCart( {productId, quantity} ) {
+async addCart() {
   try {
-    let product = await manager.getProductById(productId)
+    let data = { products: [] }
 
-    let data = {product, quantity}
-
-    if (this.carts.length > 0) {
-      let nextId = this.carts[this.carts.length - 1].id + 1
-      data.id = nextId
+    if (this.carts.length>0) {
+        let next_id = this.carts[this.carts.length-1].id+1
+        data.id = next_id
     } else {
-      data.id = 1
+        data.id = 1
     }
-    
-      this.carts.push(data)
-
-      let cartJSON = JSON.stringify(this.carts, null, 2)
-
-      await fs.promises.writeFile(this.path, cartJSON)
-      console.log('Cart created: ' + data.id)
-      return 'Cart created: ' + data
-    
-  } catch (error) {
+    this.carts.push(data)
+    let data_json = JSON.stringify(this.carts,null,2)
+    await fs.promises.writeFile(this.path,data_json)
+    console.log('id´s created cart: '+data.id)
+    return 201
+} catch(error) {
     console.log(error)
-    return 'addCart: error'
-  }
+    return null
+}
 }
 
   getCarts() {
