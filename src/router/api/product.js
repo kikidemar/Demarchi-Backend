@@ -1,11 +1,11 @@
 import {Router} from "express";
-import manager from '../../managers/productos.js'
+import prod_manager from '../../managers/productos.js'
 
 const product_router = Router()
 
 product_router.get('/', async (req, res, next) =>{
   try { 
-    let products = manager.getProducts()
+    let products = prod_manager.getProducts()
     if(Number(req.query.limit)){
       let limit = req.query.limit
       let productsLimit = products.slice(0, limit)
@@ -25,28 +25,36 @@ product_router.get('/', async (req, res, next) =>{
   })
 
 
-product_router.post('/', async (req, res, next) =>{
+product_router.post('/', async (req, res, next) => {
   try {
-    let response = await manager.addProduct(req.body)
-    if (response===201) {
-      return res.json({ status:201, message: 'product created'})
-    } 
-    return res.json({ status: 400, message: 'not created'})
-  } catch(error){
-    next(error)
-  }
-})
+      let title = req.body.title
+      let description = req.body.description
+      let price = Number(req.body.price)
+      let thumbnail = req.body.thumbnail
+      let stock = Number(req.body.stock)
 
-product_router.get('/:id', async (req, res, next) =>{
+      
+      let response = await prod_manager.addProduct( { title, description, price, thumbnail, stock} );
+      if (response===201) {
+          return res.redirect('/products') 
+          
+      }
+    
+      return res.status(400).json({ status: 400, message: 'Product not created' })
+      } catch (error) {
+      next(error)
+      }
+  })
+
+product_router.get('/:pid', async (req, res, next) =>{
   try {
-    let parametros = req.params
-    let id = Number(parametros.id)
-    let one = manager.getProductById(id)
+    let id = Number(req.params.pid)
+    let product = prod_manager.getProductById(id)
 
-    if (one) {
+    if (product) {
     return res.send({
       status: 200,
-      'product': one
+      'product': product
     })
     } else {
       return res.send({
@@ -60,11 +68,11 @@ product_router.get('/:id', async (req, res, next) =>{
   })
 
 
-  product_router.put('/:id', async (req, res, next) =>{
+  product_router.put('/:pid', async (req, res, next) =>{
     try{
-      let id = Number(req.params.id)
+      let id = Number(req.params.pid)
       let data = req.body
-      let response = await manager.updateProduct(id,data)
+      let response = await prod_manager.updateProduct(id,data)
       if (response===200) {
         return res.json({status: 200, message:'product updated'})
       } else{
@@ -76,10 +84,10 @@ product_router.get('/:id', async (req, res, next) =>{
   })
 
 
-  product_router.delete('/:id', async(req, res, next)=> {
+  product_router.delete('/:pid', async(req, res, next)=> {
     try{
-      let id = Number(req.params.id)
-      let response = await manager.deleteProduct(id)
+      let id = Number(req.params.pid)
+      let response = await prod_manager.deleteProduct(id)
       if (response===200) {
         return res.json({status: 200, message:'product deleted'})
       } 

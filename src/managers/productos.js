@@ -36,43 +36,43 @@ class ProductManager {
     }
   }
 
-  async addProduct({ title, description, price, thumbnail, stock, code}) {
+  async addProduct({ title, description, price, thumbnail, stock}) {
     try {
-      let product = { title, description, price, thumbnail, stock, code}
-  
-      if (this.products.length > 0) {
-        let nextId = this.products[this.products.length - 1].id + 1
-        product.id = nextId
-      } else {
-        product.id = 1
-      }
-  
-      if (this.products.some(product => product.code === code)) {
-        console.error('Ya existe un producto con el mismo código')
-        return 400
-      } else {
-        this.products.push(product)
-  
-        let productJSON = JSON.stringify(this.products, null, 2)
-  
-        await fs.promises.writeFile(this.path, productJSON)
-        console.log('Product created: ' + product.id)
-        return 201
-      }
-    } catch (error) {
-      console.log(error)
-      return 'addProduct: error'
+        if (title&&description&&price&&thumbnail&&stock) {
+            let data = { title,description,price,thumbnail,stock}
+            if (this.products.length>0) {
+                let next_id = this.products[this.products.length-1].id+1
+                data.id = next_id
+            } else {
+                data.id = 1
+            }
+            this.products.push(data)
+            let data_json = JSON.stringify(this.products,null,2)
+            await fs.promises.writeFile(this.path,data_json)
+            console.log('id´s created product: '+data.id)
+            return 201
+        }
+        console.log('complete data')
+        return null
+    } catch(error) {
+        console.log(error)
+        return null
     }
-  }
+}
   
+  read_products() {
+    return this.products
+  }
+  read_product(id) {
+    return this.products.find(each=>each.id===id)
+  }
 
-  getProductById(productId) {
+  getProductById(pid) {
+    let buscar = this.read_product(pid)
     try{
-    const product = this.products.find(p => p.id === parseInt(productId))
-
-    if (product) {
-      console.log(product)
-      return product
+    if (buscar) {
+      console.log(buscar)
+      return buscar
     } else {
       console.error('Not found')
       return null
@@ -85,66 +85,40 @@ class ProductManager {
 
   async updateProduct(id, data) {
     try {
-      let one = this.getProductById(id)
-      for (let prop in data) {
-        one[prop] = data[prop]
-      }
-
-      const index = this.products.findIndex(p => p.id === one.id)
-      this.products[index] = one
-
-      let productJSON = JSON.stringify(this.products, null, 2 )
-      await fs.promises.writeFile(this.path, productJSON)
-      console.log('UpdateProduct: done')
-      return 200
+        let one = await this.read_product(id)
+        for (let prop in data) {
+            one[prop] = data[prop]
+        }
+        let data_json = JSON.stringify(this.products,null,2)
+        await fs.promises.writeFile(this.path,data_json)
+        console.log('updated product: '+id)
+        return 200
     } catch(error) {
-      console.log(error)
-      return null
+        console.log(error)
+        return null
     }
-  }
+}
 
   async deleteProduct (id) {
     try {
-      this.products = this.products.filter(each => each.id!== id)
-
-      let productJSON = JSON.stringify(this.products, null, 2)
-
-      await fs.promises.writeFile(this.path, productJSON)
-      console.log('delete product: done')
-      return 200
-    } catch(err) {
-      console.log(err)
-      return null
+        let one = this.products.find(each=>each.id===id)
+        if (one) {
+            this.products = this.products.filter(each=>each.id!==id)
+            let data_json = JSON.stringify(this.products,null,2)
+            await fs.promises.writeFile(this.path,data_json)
+            console.log('delete product: '+id)
+            return 200
+        }
+        console.log('not found')
+        return null
+    } catch(error) {
+        console.log(error)
+        return null
     }
-  }
+}
 
 }
 
-  let manager = new ProductManager('./src/data/products.json')
+  let prod_manager = new ProductManager('./src/data/products.json')
 
-  export default manager
-
-
-
-// async function product() {
-
-
-//   await product.addProduct({ title: 'coca', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc123', stock: 25})
-//   await product.addProduct({ title: 'sprite', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc124', stock: 25})
-//   await product.addProduct({ title: 'fanta', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc125', stock: 25})
-//   await product.addProduct({ title: 'pomelo', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc126', stock: 25})
-//   await product.addProduct({ title: 'agua', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc127', stock: 25})
-//   await product.addProduct({ title: 'fernet', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc128', stock: 25})
-//   await product.addProduct({ title: 'gancia', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc129', stock: 25})
-//   await product.addProduct({ title: 'redbull', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc130', stock: 25})
-//   await product.addProduct({ title: 'speed', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc131', stock: 25})
-//   await product.addProduct({ title: 'aquarius', description: 'Este es un producto prueba', price: 200, thumbnail:'Sin imagen', code: 'abc132', stock: 25})
-//   await product.getProductById(9)
-//   await product.updateProduct(9, {title: 'monster'})
-//   await product.deleteProduct(10)
-//   await product.getProducts();
-
-// }
-
-// product()
-
+  export default prod_manager
