@@ -88,7 +88,7 @@ class CartManager {
         let element = auxProducts[index];
         if (pid === element.id) {
         auxProducts[index].stock = element.stock - x;
-        prod_manager.update_product(pid, element);
+        prod_manager.updateProduct(pid, element);
         }
     }
     // this.carts.push(auxCart);
@@ -120,7 +120,7 @@ async delete_cart(cid, pid, x) {
           let element = auxProducts[index];
           if (pid === element.id) {
           auxProducts[index].stock = element.stock + x;
-          prod_manager.update_product(pid, element);
+          prod_manager.updateProduct(pid, element);
           }
       }
       let data_json = JSON.stringify(this.carts, null, 2);

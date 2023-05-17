@@ -36,29 +36,34 @@ class ProductManager {
     }
   }
 
-  async addProduct({ title, description, price, thumbnail, stock}) {
+  async addProduct({ title, description, price, thumbnail, stock, code}) {
     try {
-        if (title&&description&&price&&thumbnail&&stock) {
-            let data = { title,description,price,thumbnail,stock}
-            if (this.products.length>0) {
-                let next_id = this.products[this.products.length-1].id+1
-                data.id = next_id
-            } else {
-                data.id = 1
-            }
-            this.products.push(data)
-            let data_json = JSON.stringify(this.products,null,2)
-            await fs.promises.writeFile(this.path,data_json)
-            console.log('id´s created product: '+data.id)
-            return 201
-        }
-        console.log('complete data')
-        return null
-    } catch(error) {
-        console.log(error)
-        return null
+      let product = { title, description, price, thumbnail, stock, code}
+  
+      if (this.products.length > 0) {
+        let nextId = this.products[this.products.length - 1].id + 1
+        product.id = nextId
+      } else {
+        product.id = 1
+      }
+  
+      if (this.products.some(product => product.code === code)) {
+        console.error('Ya existe un producto con el mismo código')
+        return
+      } else {
+        this.products.push(product)
+  
+        let productJSON = JSON.stringify(this.products, null, 2)
+  
+        await fs.promises.writeFile(this.path, productJSON)
+        console.log('Product created: ' + product.id)
+        return 201
+      }
+    } catch (error) {
+      console.log(error)
+      return 'addProduct: error'
     }
-}
+  }
   
   read_products() {
     return this.products

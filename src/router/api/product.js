@@ -24,26 +24,24 @@ product_router.get('/', async (req, res, next) =>{
   }
   })
 
+  product_router.post('/', async (req, res, next) =>{
+    try {
 
-product_router.post('/', async (req, res, next) => {
-  try {
       let title = req.body.title
       let description = req.body.description
       let price = Number(req.body.price)
       let thumbnail = req.body.thumbnail
       let stock = Number(req.body.stock)
+      let code = req.body.code
 
-      
-      let response = await prod_manager.addProduct( { title, description, price, thumbnail, stock} );
+      let response = await prod_manager.addProduct({title, description, price, thumbnail, stock, code})
       if (response===201) {
-          return res.redirect('/products') 
-          
+        return res.json({ status:201, message: `product ${title} created`})
       }
-    
-      return res.status(400).json({ status: 400, message: 'Product not created' })
-      } catch (error) {
+      return res.json({ status: 400, message: 'not created'})
+    } catch(error){
       next(error)
-      }
+    }
   })
 
 product_router.get('/:pid', async (req, res, next) =>{
