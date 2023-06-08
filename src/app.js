@@ -1,4 +1,5 @@
 import express from 'express';
+import { connect } from 'mongoose'
 import index_router from './router/index_router.js'
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'
@@ -19,5 +20,11 @@ server.use(express.json())
 server.use('/', index_router)
 server.use(errorHandler)
 server.use(notFoundHandler)
+
+//database
+
+connect('mongodb+srv://kikidemar:hola1234@kikidb.t2krew0.mongodb.net/commerce')
+  .then(()=>console.log('database connected'))
+  .catch(err=>console.log(err))
 
 export default server
