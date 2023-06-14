@@ -1,10 +1,11 @@
 import {Router} from "express";
-import Product from '../../models/product.model.js'
+import Product from '../../models/Product.js'
 import prod_manager from '../../dao/managers/productos.js'
+import auth from '../../middlewares/auth.js'
 
 const product_router = Router()
 
-product_router.get('/', async (req, res, next) =>{
+product_router.get('/', auth, async (req, res, next) =>{
   try { 
     let products = await Product.find()
     if(Number(req.query.limit)){
