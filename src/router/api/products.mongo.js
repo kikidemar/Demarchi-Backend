@@ -5,7 +5,7 @@ import auth from '../../middlewares/auth.js'
 
 const product_router = Router()
 
-product_router.get('/', auth, async (req, res, next) =>{
+product_router.get('/', async (req, res, next) =>{
   try { 
     let products = await Product.find()
     if(Number(req.query.limit)){
@@ -26,7 +26,36 @@ product_router.get('/', auth, async (req, res, next) =>{
   }
   })
 
-  product_router.post('/', async (req, res, next) =>{
+// product_router.get('/', async (req, res, next) => {
+//   try {
+//       const productsPerPage = 6
+
+//       const defaultPage = 1
+//       const page = req.query.page ? parseInt(req.query.page) : defaultPage
+//       const filter = req.query.filter ? req.query.filter : ''
+
+//       const query = {}
+//       if (filter) {
+//           query.title = { $regex: new RegExp(filter, 'i') }
+//       }
+
+      
+//       const products = await Product.paginate(query, {
+//           page: page,
+//           limit: productsPerPage
+//       })
+
+//       console.log(products)
+
+//       return res.status(200).json(products)
+//   } catch (error) {
+//       next(error)
+//   }
+// })
+
+
+
+product_router.post('/', async (req, res, next) =>{
     try {
 
       let title = req.body.title
@@ -48,7 +77,7 @@ product_router.get('/', auth, async (req, res, next) =>{
 
 product_router.get('/:pid', async (req, res, next) =>{
   try {
-    let id = (req.params.pid)
+    let id = String(req.params.pid)
     let product = await Product.findById(id)
 
     if (product) {
@@ -70,7 +99,7 @@ product_router.get('/:pid', async (req, res, next) =>{
 
   product_router.put('/:pid', async (req, res, next) =>{
     try{
-      let id = (req.params.pid)
+      let id = String(req.params.pid)
       let data = req.body
       let response = await Product.findByIdAndUpdate(id,data,{new:true})
       if (response) {
@@ -86,7 +115,7 @@ product_router.get('/:pid', async (req, res, next) =>{
 
   product_router.delete('/:pid', async(req, res, next)=> {
     try{
-      let id = (req.params.pid)
+      let id = String(req.params.pid)
       let response = await Product.findByIdAndDelete(id)
       if (response) {
         return res.json({status: 200, message:'product deleted'})

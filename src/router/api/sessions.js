@@ -15,7 +15,7 @@ sessions_router.post('/login', async(req,res,next)=> {
     req.session.email = email
     return res.status(200).json({
       success: true,
-      message: email + 'ha iniciado sesion'
+      message: email + ' ha iniciado sesion'
     })
   } catch(error) {
     next(error)
