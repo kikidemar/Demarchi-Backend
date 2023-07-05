@@ -8,7 +8,7 @@ document.getElementById('register').addEventListener('click',(event)=>{
       password: document.querySelector('#password').value,
   }
   console.log(data)
-  fetch(`/api/auth/signup`, {
+  fetch(`/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)

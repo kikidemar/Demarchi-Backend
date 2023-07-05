@@ -3,7 +3,7 @@ document.getElementById('login').addEventListener('click',(event)=> {
   const email = document.getElementById('email').value
   const password = document.getElementById('password').value
   console.log({ email,password })
-  fetch('/api/session/login',{
+  fetch('/api/auth/login',{
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email,password })
@@ -15,7 +15,7 @@ document.getElementById('login').addEventListener('click',(event)=> {
 
 document.getElementById('signout').addEventListener('click',(event)=> {
   event.preventDefault()
-  fetch('/api/session/logout',{
+  fetch('/api/auth/signout',{
       method: 'POST'
   })
       .then(res=>res.json())
