@@ -2,10 +2,12 @@ import {Router} from "express";
 import Product from '../../models/Product.js'
 import prod_manager from '../../dao/managers/productos.js'
 import auth from '../../middlewares/auth.js'
+import passport from 'passport'
+import passport_call from "../../middlewares/passport_call.js";
 
 const product_router = Router()
 
-product_router.get('/', async (req, res, next) =>{
+product_router.get('/', passport_call('jwt'), async (req, res, next) =>{
   try { 
     let products = await Product.find()
     if(Number(req.query.limit)){

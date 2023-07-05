@@ -1,9 +1,8 @@
 const socket = io()
 
-socket.emit(
-  'primer conexion',
-  {
-    name: 'christiann',
-    age: 29
-  }
+socket.on(
+    'change_quantity',
+    quantity => {
+        document.querySelector('#quantity').innerHTML = `CART: ${quantity}`
+    }
 )

@@ -16,6 +16,7 @@ const server = express()
 
 //middlewares
 
+server.use(cookieParser(process.env.SECRET_COOKIE)) 
 server.use(expressSession({
   secret: process.env.SECRET_SESSION,
   resave: true,
@@ -30,6 +31,7 @@ server.use('', express.static('public'))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
 server.use(morgan('dev'))
+
 inicializePassport()
 server.use(passport.initialize())
 server.use(passport.session())
@@ -37,7 +39,7 @@ server.use(passport.session())
 server.use('/', index_router)
 server.use(errorHandler)
 server.use(notFoundHandler)
-server.use(cookieParser(process.env.SECRET_COOKIE)) 
+
 
 
 
