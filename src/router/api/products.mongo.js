@@ -1,6 +1,6 @@
 import {Router} from "express";
 import Product from '../../models/Product.js'
-import prod_manager from '../../dao/managers/productos.js'
+import prod_manager from '../../dao/productos.js'
 import auth from '../../middlewares/auth.js'
 import passport from 'passport'
 import passport_call from "../../middlewares/passport_call.js";

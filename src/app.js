@@ -1,10 +1,10 @@
 import express from 'express';
-import 'dotenv/config.js'
+import dotenv from './config/config.js'
 import { connect } from 'mongoose'
 import index_router from './router/index_router.js'
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'
-import { __dirname } from './utils.js'
+import { __dirname } from './utils/dirname.js'
 import cookieParser from 'cookie-parser'
 import expressSession from 'express-session'
 import morgan from 'morgan'

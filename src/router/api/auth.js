@@ -120,4 +120,12 @@ auth_router.get('/fail-register-github', (req,res)=> res.status(400).json({
   message:'Error auth'
 }))
 
+auth_router.get("/current", passport_call("jwt"), async (req, res, next) => {
+  const data = await jwt.verify(req.cookies.token, process.env.SECRET_JWT, async (error, credentials) => {
+      if (error) return { message: "error to get token credentials" }
+      return credentials
+  })
+  return res.status(200).json(data)
+})
+
 export default auth_router
