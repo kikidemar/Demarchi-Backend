@@ -1,30 +1,53 @@
 import express from 'express';
+import dotenv from './config/config.js'
 import { connect } from 'mongoose'
 import index_router from './router/index_router.js'
+import cors from 'cors'
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'
-import { engine } from 'express-handlebars'
-import { __dirname } from './utils.js'
+import { __dirname } from './utils/dirname.js'
+import cookieParser from 'cookie-parser'
+import expressSession from 'express-session'
+import morgan from 'morgan'
+import mongoStore from 'connect-mongo'
+import passport from 'passport'
+import inicializePassport from './config/passport.js'
+
 
 const server = express()
 
-// template engine
-server.engine('handlebars', engine())
-server.set('views', __dirname + '/views')
-server.set('view engine', 'handlebars')
-
 //middlewares
-server.use('/public', express.static('public'))
-server.use(express.urlencoded({extended:true}))
+
+server.use(cookieParser(process.env.SECRET_COOKIE)) 
+server.use(expressSession({
+  secret: process.env.SECRET_SESSION,
+  resave: true,
+  saveUninitialized: true,
+  store: mongoStore.create({
+    mongoUrl: process.env.LINK_MONGO,
+    ttl: 10000
+  })
+}))
+
+server.use('', express.static('public'))
 server.use(express.json())
+server.use(express.urlencoded({extended:true}))
+server.use(cors())
+server.use(morgan('dev'))
+
+inicializePassport()
+server.use(passport.initialize())
+server.use(passport.session())
+
 server.use('/', index_router)
 server.use(errorHandler)
 server.use(notFoundHandler)
 
+
+
+
 //database
 
-connect('mongodb+srv://kikidemar:hola1234@kikidb.t2krew0.mongodb.net/commerce')
-  .then(()=>console.log('database connected'))
-  .catch(err=>console.log(err))
+
 
 export default server
