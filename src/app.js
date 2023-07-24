@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from './config/config.js'
 import { connect } from 'mongoose'
 import index_router from './router/index_router.js'
+import cors from 'cors'
 import errorHandler from './middlewares/errorHandler.js'
 import notFoundHandler from './middlewares/notFoundHandler.js'
 import { __dirname } from './utils/dirname.js'
@@ -11,6 +12,7 @@ import morgan from 'morgan'
 import mongoStore from 'connect-mongo'
 import passport from 'passport'
 import inicializePassport from './config/passport.js'
+
 
 const server = express()
 
@@ -30,6 +32,7 @@ server.use(expressSession({
 server.use('', express.static('public'))
 server.use(express.json())
 server.use(express.urlencoded({extended:true}))
+server.use(cors())
 server.use(morgan('dev'))
 
 inicializePassport()
