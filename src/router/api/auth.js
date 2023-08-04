@@ -1,16 +1,22 @@
 import { Router } from 'express'
-import User from '../../models/User.js'
+// import User from '../../models/User.js'
 import validator from '../../middlewares/validator.js'
 import pass_is_8 from '../../middlewares/pass_is_8.js'
 import createToken from '../../middlewares/createToken.js'
 import create_hash from '../../middlewares/create_hash.js'
-import is_valid_pass from '../../middlewares/is_valid_pass.js'
+// import is_valid_pass from '../../middlewares/is_valid_pass.js'
 import passport from 'passport'
 import validator_signin from '../../middlewares/validator_signin.js'
 import passIsOk from '../../middlewares/passIsOk.js'
 import passport_call from '../../middlewares/passport_call.js'
+import AuthController from '../../controllers/auth.controller.js'
+import compression from 'express-compression'
 
 const auth_router = Router()
+auth_router.use(compression({
+  brotli:{enabled: true,
+          zlib: {}}
+}))
 
 // Sign Up
 
@@ -23,24 +29,11 @@ auth_router.post(
     'register',
     { failureRedirect: 'api/auth/fail-register'}
   ), 
-  async(req,res,next)=> {
-  
-    try {
-      res.status(201).json({
-      success: true,
-      message: 'user created!'
-      })
-  } catch (error) {
-      return next(error)
-    } 
-  }
+  AuthController.register
 )
 
 
-auth_router.get('/fail-register', (req, res) => { res.status(400).json({
-  success:false,
-  message: ' Error auth'
-})})
+auth_router.get('/fail-register', AuthController.failRegister)
 
 
 
@@ -53,26 +46,10 @@ auth_router.post(
   passport.authenticate('login', { failureRedirect: '/api/auth/fail-login'}), 
   passIsOk,
   createToken,
-  (req, res, next) => {
-    try {
-      // const {email} = req.body
-      // req.session.email = email
-      // req.session.role = req.user.role
-      return res.status(200).cookie('token',req.token,{maxAge:60*60*1000}).json({
-        success: true,
-        message: 'User logged in!'
-        })
-      } 
-   catch (err) {
-    next(err)
-  }
-})
+  AuthController.login)
 
 
-auth_router.get('/fail-login', (req, res) => { res.status(400).json({
-  success:false,
-  message: 'Error auth'
-})})
+auth_router.get('/fail-login', AuthController.failLogin)
 
 
 
@@ -100,10 +77,8 @@ auth_router.get('/fail-login', (req, res) => { res.status(400).json({
 auth_router.post(
     '/signout', 
     passport_call('jwt',{session:false}),
-    (req,res)=> res.status(200).clearCookie('token').json({
-      success:true,
-      message: 'Siggned out!'
-    }))
+    AuthController.signOut
+    )
 
 
 
@@ -120,12 +95,6 @@ auth_router.get('/fail-register-github', (req,res)=> res.status(400).json({
   message:'Error auth'
 }))
 
-auth_router.get("/current", passport_call("jwt"), async (req, res, next) => {
-  const data = await jwt.verify(req.cookies.token, process.env.SECRET_JWT, async (error, credentials) => {
-      if (error) return { message: "error to get token credentials" }
-      return credentials
-  })
-  return res.status(200).json(data)
-})
+auth_router.get("/current", passport_call("jwt"), AuthController.current)
 
 export default auth_router

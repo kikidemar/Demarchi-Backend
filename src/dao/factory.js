@@ -1,4 +1,4 @@
-import { config } from "dotenv"
+import config from "../config/config.js"
 
 let ProductDao
 let CartDao
@@ -6,9 +6,9 @@ let UserDao
 
 switch (config.persistence) {
     case 'MONGO':
-      ProductDao = require('../dao/Mongo/product.mongo.js')
-      CartDao = require('../dao/Mongo/cart.mongo.js')
-      // UserDao = require('../dao/Mongo/user.mongo.js')
+      ProductDao = require('../Mongo/productDao.mongo.js')
+      CartDao = require('../Mongo/cartDao.mongo.js')
+      UserDao = require('../Mongo/authDao.mongo.js')
 
     break
 
@@ -18,9 +18,11 @@ switch (config.persistence) {
     //   UserDao = require('../dao/Memory/user.memory.js')
     // break
 
-    // case 'FILE':
-    //   ProductDao = require('../dao/File/product.file.js') 
-    //   CartDao = require('../dao/File/cart.file.js')
-    //   UserDao = require('../dao/File/user.file.js')
-    // break
+    case 'FILE':
+      ProductDao = require('../dao/File/productDao.file.js') 
+      CartDao = require('../dao/File/cartDao.file.js')
+      UserDao = require('../dao/File/authDao.file.js')
+    break
 }
+
+export default {ProductDao, CartDao, UserDao}

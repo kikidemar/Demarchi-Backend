@@ -8,23 +8,23 @@ class ProductRepository {
     return result
   }
 
-  getProduct = async(pid) => {
-    let result = await this.dao.getById()
+  getProduct = async(id) => {
+    let result = await this.dao.getBy(id)
     return result
   }
 
-  createProduct = async() => {
-    let result = await this.dao.create()
+  createProduct = async({title, description, price, thumbnail, stock, code}) => {
+    let result = await this.dao.create({title, description, price, thumbnail, stock, code})
     return result
   }
 
-  updateProduct = async(pid, productToProduct) => {
-    let result = await this.dao.update()
+  updateProduct = async(id,data) => {
+    let result = await this.dao.update(id,data,{new:true})
     return result
   }
 
-  deleteProduct = async(pid) => {
-    let result = await this.dao.delete()
+  deleteProduct = async(id) => {
+    let result = await this.dao.delete(id)
     return result
   }
 

@@ -1,5 +1,5 @@
 import { compareSync } from "bcrypt";
-import User from '../models/User.js'
+// import User from '../models/User.js'
 
 export default async function(req,res,next) {
     //let user = await User.findOne({ email:req.body.email })
