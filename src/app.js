@@ -12,7 +12,7 @@ import morgan from 'morgan'
 import mongoStore from 'connect-mongo'
 import passport from 'passport'
 import inicializePassport from './config/passport.js'
-import addLogger from './config/logger.js'
+import {addLogger} from './config/logger.js'
 
 
 const server = express()

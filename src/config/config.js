@@ -20,6 +20,7 @@ const config = {
   PORT: process.env.PORT                     || 8000,
   LINK_MONGO: process.env.LINK_MONGO           || '',
   persistence: process.env.PERSISTENCE,
+  LOGGER: process.env.LOGGER,
   connectDB: () => MongoSingleton.getInstance()
 }
 

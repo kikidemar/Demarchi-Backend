@@ -2,15 +2,16 @@ import server from "./app.js"
 import { connect } from "mongoose"
 import { Server } from "socket.io"
 import  config  from './config/config.js'
+import { logger } from "./config/logger.js"
 
 const port = process.env.PORT || 8080
 config.connectDB()
 
 const ready = () => {
-    console.log('server ready on PORT: ' + port)
+    logger.info('server ready on PORT: ' + port)
     connect(process.env.LINK_MONGO)
-        .then (()=> console.log('connected to database'))
-        .catch (err => console.log(err))
+        .then (()=> logger.info('connected to database'))
+        .catch (err => logger.error(err))
 }
 
 const http_server = server.listen(port,ready)
@@ -22,11 +23,11 @@ socket_server.on(       //on sirve para escuchar los mensajes que llegan (en est
     'connection',       //identificador del mensaje a escuchar (el primero siempre connection)
     socket => {         //callback que se va a ejecutar apenas se conecta un cliente
         //console.log(socket)
-        console.log(`client ${socket.client.id} connected`)
+        logger.info(`client ${socket.client.id} connected`)
         socket.on(
             'primer_conexion',
             data=> {
-                console.log(data.name)
+                logger.info(data.name)
                 contador++
                 socket_server.emit(
                     'contador',

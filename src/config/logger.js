@@ -1,4 +1,5 @@
 import winston from "winston"
+import dotenv from 'dotenv'
 
 const customLevelOptions = {
   levels: { 
@@ -21,7 +22,7 @@ const logger = winston.createLogger({
   levels: customLevelOptions.levels,
   transports: [
       new winston.transports.Console({
-          level: 'info',
+          level: process.env.LOGGER,
           format: winston.format.combine(
               winston.format.colorize({colors: customLevelOptions.colors}),
               winston.format.simple()
@@ -41,4 +42,4 @@ const addLogger = (req,res, next) => {
   next()
 }
 
-export default addLogger
+export {addLogger, logger}
