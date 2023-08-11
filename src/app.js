@@ -12,6 +12,7 @@ import morgan from 'morgan'
 import mongoStore from 'connect-mongo'
 import passport from 'passport'
 import inicializePassport from './config/passport.js'
+import addLogger from './config/logger.js'
 
 
 const server = express()
@@ -38,6 +39,7 @@ server.use(morgan('dev'))
 inicializePassport()
 server.use(passport.initialize())
 server.use(passport.session())
+server.use(addLogger)
 
 server.use('/', index_router)
 server.use(errorHandler)
