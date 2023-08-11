@@ -1,12 +1,20 @@
 import server from "./app.js"
+import { connect } from "mongoose"
 import { Server } from "socket.io"
+import  config  from './config/config.js'
 
-let PORT = 8080
+const port = process.env.PORT || 8080
+config.connectDB()
 
-let ready = () => console.log('server ready on PORT: ' + PORT)
+const ready = () => {
+    console.log('server ready on PORT: ' + port)
+    connect(process.env.LINK_MONGO)
+        .then (()=> console.log('connected to database'))
+        .catch (err => console.log(err))
+}
 
-let http_server = server.listen(PORT,ready)
-let socket_server = new Server(http_server)
+const http_server = server.listen(port,ready)
+const socket_server = new Server(http_server)
 
 let contador = 0
 
