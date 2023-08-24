@@ -6,7 +6,11 @@ import sendWhatsApp from "../../utils/sendWhatsApp.js";
 const mailing_router = Router()
 
 mailing_router.get('/', async (req,res) => {
-  await sendmail()
+  await sendmail(
+    'demarchi.christiann@gmail.com',
+    'Mail de prueba',
+    `<h1>Esto es un correo de prueba</h1>`
+  )
   res.send('mail enviado')
 })
 

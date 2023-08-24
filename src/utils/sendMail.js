@@ -11,12 +11,12 @@ const transport = nodemailer.createTransport({
   }
 })
 
-const sendMail = async () => {
+const sendMail = async (userMail,subject, html) => {
   return await transport.sendMail({
-    from: 'Coder Test <demarchi.christiann@gmail.com>',
-    to:'demarchi.christiann@gmail.com',
-    subject:'Correo electronico de prueba',
-    html: `<h1>Esto es un correo de prueba</h1>`,
+    from: `<Servicio de ${gmail_user_app}>`,
+    to: userMail,
+    subject: subject,
+    html: html,
     attachments: [{
       // filename: 'nodejs.png',
       // path: __dirname+'img/nodejs.png',

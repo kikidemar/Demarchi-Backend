@@ -8,7 +8,7 @@ const schema = new mongoose.Schema({
   photo: {type: String, default:'https://www.pngitem.com/pimgs/m/227-2271053_usuario-persona-genrico-solo-general-smbolo-user-clipart.png'},
   email: {type: String, required: true, index: true, unique: true},
   age: {type:Number},
-  role: { type: String, enum: ["user", "admin"], default: "user"},
+  role: { type: String, enum: ["user", "admin", "premium"], default: "user"},
   password: {type:String, required:true}
 })
 
