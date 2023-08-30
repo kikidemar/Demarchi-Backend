@@ -1,9 +1,18 @@
-document.getElementById('forgot-pass').addEventListener('click',(event)=> {
-  event.preventDefault()
-  fetch('api/auth/forgot-pass', {
+document.getElementById('user').addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const email = document.getElementById('email').value;
+  try {
+    const response = await fetch('/api/auth/forgot-pass', {
       method: 'POST',
-  })
-    .then(res=>res.json())
-    .then(res=>alert(res.message))
-    .catch(err=>console.log(err))
-})
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: email
+      }),
+    });
+  } catch (error) {
+    console.log ("An error occurred. Please try again later.")
+  }
+});

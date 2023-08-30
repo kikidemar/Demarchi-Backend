@@ -4,7 +4,7 @@ import mongoosePaginate from 'mongoose-paginate-v2'
 const collection = 'users'
 const schema = new mongoose.Schema({
   name: {type: String, required: true},
-  last_name: { type: String, required: true },
+  last_name: { type: String, required: false },
   photo: {type: String, default:'https://www.pngitem.com/pimgs/m/227-2271053_usuario-persona-genrico-solo-general-smbolo-user-clipart.png'},
   email: {type: String, required: true, index: true, unique: true},
   age: {type:Number},

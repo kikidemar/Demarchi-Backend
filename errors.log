@@ -1,3 +1,5 @@
 warning: Warning message
 error: Error message
 fatal: Fatal message
+error: users validation failed: last_name: Path `last_name` is required., role: `1` is not a valid enum value for path `role`.
+error: users validation failed: role: `1` is not a valid enum value for path `role`.
