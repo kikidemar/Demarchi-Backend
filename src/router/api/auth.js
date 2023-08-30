@@ -14,6 +14,9 @@ import compression from 'express-compression'
 import User from "../../dao/Mongo/models/User.js"
 import sendMail from '../../utils/sendMail.js'
 import config from '../../config/config.js'
+import Jwt from 'jsonwebtoken'
+import { logger } from '../../config/logger.js'
+import { compareSync, genSaltSync, hashSync } from 'bcrypt'
 
 const auth_router = Router()
 auth_router.use(compression({
@@ -109,25 +112,14 @@ auth_router.post('/forgot-pass', async (req,res)=> {
     return res.status(404).send("User not found");
   }
 
-  
-  const user = {
-    name: userDB.name,
-    last_name: userDB.last_name,
-    email: userDB.email,
-    role: userDB.role,
-    photo: userDB.photo,
-    age: userDB.age,
-    cid: userDB.cid
-  }
-
   // Generate a JWT token for password reset (expires in 1 hour)
-  const token = createToken({ user }, config.privateKeyJwt, { expiresIn: "1h" });
+  const token = Jwt.sign({ email: userDB.email }, config.privateKeyJwt, { expiresIn: "1h" });
 
   // Send the reset link to the user's email
   const subject = 'Reset Password'
   const html = `
-  <p>Welcome ${user.name}</p>
-  <p>Click <a href='http://localhost:8080/reset-password/${token}'>Here</a> to reset password</p>
+  <p>Welcome ${userDB.name}</p>
+  <p>Click <a href='http://localhost:8080/reset-pass?token=${token}'>Here</a> to reset password</p>
   <p>This link expires in one hour</p>
   `
   await sendMail(email, subject, html)
@@ -135,22 +127,57 @@ auth_router.post('/forgot-pass', async (req,res)=> {
 
 })
 
-// auth_router.get('/reset-password:token', (req, res) => {
-//   const token = req.params
+auth_router.get('/reset-pass', (req, res) => {
+  const token = req.query.token
 
-//   jwt.verify(
-//     token,
-//     config.privateKeyJwt,
-//     async(error,credentials) => {
-// 			if(error) {
-// 				return res.status(401).json({
-// 					success: false,
-// 					message: 'error de autorización!'
-// 				}) 
-// 			}
-    
-//     res.render
-//     })
-// })
+  Jwt.verify(token, config.privateKeyJwt,  (err, credencials) => {
+    if (err) {
+      return res.status(401).send("Invalid or expired token");
+    }
+
+    // Render the password reset form
+    res.render("reset-pass", { token });
+  });
+})
+
+auth_router.post('/reset-pass', async (req, res) => {
+  try {
+    const token = req.body.token;
+    const newPassword = req.body.newPassword;
+    const confirmPassword = req.body.confirmPassword;
+
+    Jwt.verify(token, config.privateKeyJwt, async (err, credentials) => {
+      if (err) {
+        return res.status(401).send('Invalid or expired token');
+      }
+
+      try {
+        let user = await User.findOne({ email: credentials.email });
+        if (!user) {
+          return res.status(404).send('User not found');
+        }
+
+        if (newPassword !== confirmPassword) {
+          return res.status(400).send('Passwords do not match');
+        }
+        
+        if (compareSync(newPassword, user.password)) return res.send(400, 'The new password cannot be the same as the old one')
+
+        user.password = hashSync(newPassword, genSaltSync())
+        await user.save();
+
+        res.send('Password reset successful');
+      } catch (error) {
+        logger.error(error.message);
+        res.status(500).send('An error occurred on the server');
+      }
+    });
+  } catch (error) {
+    logger.error(error.message);
+    res.status(500).send('An error occurred on the server');
+  }
+});
+
+
 
 export default auth_router

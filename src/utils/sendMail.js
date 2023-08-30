@@ -13,7 +13,7 @@ const transport = nodemailer.createTransport({
 
 const sendMail = async (userMail,subject, html) => {
   return await transport.sendMail({
-    from: `<Servicio de ${gmail_user_app}>`,
+    from: `<Servicio de ${config.gmail_user_app}>`,
     to: userMail,
     subject: subject,
     html: html,
