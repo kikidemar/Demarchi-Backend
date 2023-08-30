@@ -22,3 +22,7 @@ main {
 img {
   object-fit: cover;
 }
+
+.fs-small{
+  font-size: small;
+}

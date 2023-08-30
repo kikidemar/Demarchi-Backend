@@ -13,7 +13,7 @@ export default (req, res, next) => {
 	const token = auth.split(' ')[1]
 	jwt.verify(
 		token,
-		process.env.SECRET,
+		process.env.SECRET_JWT,
 		async(error,credentials) => {
 			if(error) {
 				return res.status(401).json({

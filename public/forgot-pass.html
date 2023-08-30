@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" href="/styles.css">
-    <title>Login</title>
+    <title>Forgot-pass</title>
 </head>
 <body>
     <nav class="navbar navbar-expand-sm bg-warning">
@@ -40,22 +40,14 @@
         <div class="container">
             <div class="row d-flex justify-content-center">
                 <div class="col-10 col-sm-9 col-md-8 col-lg-7 col-xl-6 col-xxl-5 d-flex flex-column">
-                <h3 class="mb-4 text-center">Welcome Back!</h3>
+                <h3 class="mb-4 text-center">Forgot Password</h3>
                 <form id="user" class="d-flex flex-column justify-content-center">
                     <fieldset class="mb-2 text-center">
                         <label for="email" class="form-label mb-0">Email</label>
                         <input type="email" class="form-control" name="email" id="email" />
                     </fieldset>
-                    <fieldset class="mb-2 text-center">
-                        <label for="password" class="form-label mb-0">Password</label>
-                        <input type="password" class="form-control" name="password" id="password" />
-                    </fieldset>
-                    <span class="d-flex justify-content-evenly">
-                        <button id='login' type="submit" class="btn btn-success m-2 ms-0 w-50">Log In!</button>
-                        <button id='signout' type="submit" class="btn btn-primary m-2 me-0 w-50">Sign Out!</button>
-                    </span>
                     <div class="d-flex justify-content-end">
-                        <a href="/forgot-pass.html">Forgot your password?</a>
+                      <button id='forgot-pass' type="submit" class="btn btn-primary m-2 ms-0 w-20">Send</button>
                     </div>
                 </form>
             </div>
@@ -67,6 +59,6 @@
 </footer>
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-<script src="/scripts/login.js"></script>
+<script src="/scripts/forgot-pass.js"></script>
 <script src="/scripts/cart_icon.js"></script>
 </html>

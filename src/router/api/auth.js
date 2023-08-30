@@ -11,6 +11,9 @@ import passIsOk from '../../middlewares/passIsOk.js'
 import passport_call from '../../middlewares/passport_call.js'
 import AuthController from '../../controllers/auth.controller.js'
 import compression from 'express-compression'
+import User from "../../dao/Mongo/models/User.js"
+import sendMail from '../../utils/sendMail.js'
+import config from '../../config/config.js'
 
 const auth_router = Router()
 auth_router.use(compression({
@@ -96,5 +99,58 @@ auth_router.get('/fail-register-github', (req,res)=> res.status(400).json({
 }))
 
 auth_router.get("/current", passport_call("jwt"), AuthController.current)
+
+
+auth_router.post('/forgot-pass', async (req,res)=> {
+  const { email } = req.body;
+  // Find user by email in the database
+  let userDB = await User.findOne({ email: email })
+  if (!userDB) {
+    return res.status(404).send("User not found");
+  }
+
+  
+  const user = {
+    name: userDB.name,
+    last_name: userDB.last_name,
+    email: userDB.email,
+    role: userDB.role,
+    photo: userDB.photo,
+    age: userDB.age,
+    cid: userDB.cid
+  }
+
+  // Generate a JWT token for password reset (expires in 1 hour)
+  const token = createToken({ user }, config.privateKeyJwt, { expiresIn: "1h" });
+
+  // Send the reset link to the user's email
+  const subject = 'Reset Password'
+  const html = `
+  <p>Welcome ${user.name}</p>
+  <p>Click <a href='http://localhost:8080/reset-password/${token}'>Here</a> to reset password</p>
+  <p>This link expires in one hour</p>
+  `
+  await sendMail(email, subject, html)
+  res.send({status: 'success', message: 'Mail sent successfully'})
+
+})
+
+// auth_router.get('/reset-password:token', (req, res) => {
+//   const token = req.params
+
+//   jwt.verify(
+//     token,
+//     config.privateKeyJwt,
+//     async(error,credentials) => {
+// 			if(error) {
+// 				return res.status(401).json({
+// 					success: false,
+// 					message: 'error de autorización!'
+// 				}) 
+// 			}
+    
+//     res.render
+//     })
+// })
 
 export default auth_router

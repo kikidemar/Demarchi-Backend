@@ -14,6 +14,9 @@ import passport from 'passport'
 import inicializePassport from './config/passport.js'
 import {addLogger} from './config/logger.js'
 
+import swaggerJsDoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
+
 
 const server = express()
 
@@ -29,6 +32,21 @@ server.use(expressSession({
     ttl: 10000
   })
 }))
+
+const swaggerOptions = {
+  definition: {
+    openapi: '3.0.1',
+    info: {
+      title: 'Documentacion de app',
+      description: 'Api pensada para commerce de bebidas'
+    },
+  },
+  apis: [`${__dirname}/docs/**/*.yaml`]
+}
+
+const specs = swaggerJsDoc(swaggerOptions)
+
+server.use('/docs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs))
 
 server.use('', express.static('public'))
 server.use(express.json())

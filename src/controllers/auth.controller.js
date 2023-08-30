@@ -30,7 +30,7 @@ class AuthController {
    catch (err) {
     next(err)
   }
-}
+  }
 
   failLogin = (req, res) => { res.status(400).json({
     success:false,
