@@ -7,7 +7,7 @@ import ProductController from '../../controllers/product.controller.js'
 
 const product_router = Router()
 
-product_router.get('/', passport_call('jwt'), ProductController.getProducts)
+product_router.get('/', ProductController.getProducts)
 
 product_router.post('/', ProductController.createProduct)
 
