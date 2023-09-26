@@ -45,6 +45,8 @@ passport.use(
       async (username,password,done) => {
           try {
               let one = await User.findOne({ email:username })
+              one.last_connection = Date.now()
+              await one.save()
               if (one) {
                   return done(null,one)
               } else {
@@ -65,6 +67,8 @@ passport.use(    // esta estrategia solo sirve para autenticar usuarios
       // jwt_payload es el resultado del desencriptamiento del token
       try {
           let one = await User.findOne({ email: jwt_payload.email})
+          one.last_connection = Date.now()
+          await one.save()
           if(one) {
             delete one.password
             return done(null,one)
@@ -98,7 +102,9 @@ passport.use(
             email: profile._json.login,
             password:'hola1234',
             photo: profile._json.avatar_url,
-            age:18
+            age:18,
+            last_connection : Date.now(),
+            documents: []
           })
           return done(null, user)
         } catch (error) {
