@@ -8,6 +8,4 @@ const schema = new Schema({
     purchaser: { type: String, required: true }
 })
 
-const Ticket = model(collection, schema)
-
-export default Ticket
+export default model(collection,schema)

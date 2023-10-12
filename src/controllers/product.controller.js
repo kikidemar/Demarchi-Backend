@@ -57,9 +57,8 @@ class ProductController{
       let price = Number(req.body.price)
       let thumbnail = req.body.thumbnail
       let stock = Number(req.body.stock)
-      let code = req.body.code
 
-      let response = await productService.createProduct({title, description, price, thumbnail, stock, code})
+      let response = await productService.createProduct({title, description, price, thumbnail, stock})
       if (response) {
         return res.json({ status:201, message: `product ${title} created`})
       }

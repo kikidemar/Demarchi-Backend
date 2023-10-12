@@ -7,6 +7,7 @@ class CartController {
     try {
         let response = await Cart.create({products: []})
         if (response) {
+            console.log("Carrito creado:", response)
           return res.status(201).json({ id: response._id.toJSON(), cart: response, message: 'cart created' })
       }
       return res.status(400).json({ message: 'not created' })
@@ -130,7 +131,7 @@ class CartController {
         await cart.save()
         await product.save()
 
-        return res.status(200).json({message: "successfully updated"})
+        return res.status(200).json({message: "Cart updated"})
 
     } catch (error) {
         next(error);

@@ -5,12 +5,12 @@ selector.addEventListener('click',(event)=> {
     let description = document.getElementById('productDescription').value
     let price = document.getElementById('productPrice').value
     let stock = document.getElementById('productStock').value
-    let url_photo = document.getElementById('productPhoto').value
-    //console.log({ title,description,price,stock,url_photo });
+    let thumbnail = document.getElementById('productPhoto').value
+    // console.log({ title,description,price,stock,thumbnail });
     fetch('/api/products',{
         method: 'POST',
         headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify({ title,description,price,stock,url_photo })
+        body: JSON.stringify({ title,description,price,stock,thumbnail })
     })
     .then(res=>res.json())
     .then(res=> {
@@ -20,3 +20,23 @@ selector.addEventListener('click',(event)=> {
         }
     })
 })
+
+document.addEventListener('DOMContentLoaded', function () {
+    let cid = getCookieValue('cid')
+            function getCookieValue(cookieName) {
+                const cookies = document.cookie.split('; ');
+                for (const cookie of cookies) {
+                    const [name, value] = cookie.split('=');
+                    if (name === cookieName) {
+                        let decodedValue = decodeURIComponent(value)
+                        decoded=decodedValue.slice(2)
+                        return JSON.parse(decoded)
+                    }
+                }
+                return null
+            }
+    if (cid) {
+      const cartLink = document.getElementById('quantity')
+      cartLink.href = `/cart.html?cid=${cid}`
+    }
+    })

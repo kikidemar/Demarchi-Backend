@@ -149,33 +149,33 @@ auth_router.post('/reset-pass', async (req, res) => {
 
     Jwt.verify(token, config.privateKeyJwt, async (err, credentials) => {
       if (err) {
-        return res.status(401).send('Invalid or expired token');
+        return res.status(401).json({message:'Invalid or expired token'});
       }
 
       try {
         let user = await User.findOne({ email: credentials.email });
         if (!user) {
-          return res.status(404).send('User not found');
+          return res.status(404).json({message:'User not found'});
         }
 
         if (newPassword !== confirmPassword) {
-          return res.status(400).send('Passwords do not match');
+          return res.status(400).json({message:'Passwords do not match'});
         }
         
-        if (compareSync(newPassword, user.password)) return res.send(400, 'The new password cannot be the same as the old one')
+        if (compareSync(newPassword, user.password)) return res.status(400).json({message: 'The new password cannot be the same as the old one'})
 
         user.password = hashSync(newPassword, genSaltSync())
         await user.save();
 
-        res.send('Password reset successful');
+        res.json({message:'Password reset successful'});
       } catch (error) {
         logger.error(error.message);
-        res.status(500).send('An error occurred on the server');
+        res.status(500).json({message:'An error occurred on the server'});
       }
     });
   } catch (error) {
     logger.error(error.message);
-    res.status(500).send('An error occurred on the server');
+    res.status(500).json({message:'An error occurred on the server'});
   }
 });
 

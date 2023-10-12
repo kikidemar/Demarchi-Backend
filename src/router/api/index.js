@@ -9,6 +9,7 @@ import sessions_router from "./sessions.js"
 import auth_router from "./auth.js"
 import mailing_router from './mailing.js'
 import users_router from './users.js'
+import ticket_router from "./tickets.mongo.js";
 
 const api_router = Router()
 
@@ -19,5 +20,6 @@ api_router.use('/session', sessions_router)
 api_router.use('/auth', auth_router)
 api_router.use('/mailing', mailing_router)
 api_router.use('/users', users_router)
+api_router.use('/ticket', ticket_router)
 
 export default api_router

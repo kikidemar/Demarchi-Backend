@@ -7,9 +7,8 @@ const schema = new mongoose.Schema({
   title:{type:String,required:true, unique:true, index:true},
   description: {type:String,required:true},
   price: {type:Number,required:true},
-  thumbnail: {type:String,required:true},
-  stock: {type:Number,required:true, default:25},
-  code: {type:String,required:true}
+  thumbnail: {type:String},
+  stock: {type:Number,required:true, default:25}
 })
 schema.plugin(mongoosePaginate)
 

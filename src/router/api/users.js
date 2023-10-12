@@ -1,5 +1,6 @@
 import { Router } from "express"
 import Users from "../../dao/Mongo/models/User.js"
+import verifyTokenAndAdmin from "../../middlewares/verifyTokenAndAdmin.js"
 
 const users_router = Router()
 
@@ -43,8 +44,16 @@ users_router.get("/premium/:uid", async (req, res, next) => {
     }
 })
 
-users_router.post("/:uid/documents", async (req, res, next) => {
-
+users_router.delete("/:uid", verifyTokenAndAdmin, async (req, res, next) => {
+    try {
+        await Users.findByIdAndDelete(req.params.uid)
+        res.status(200).json({
+            success: true,
+            message: 'User deleted successfully'
+        })
+    } catch (err) {
+        res.status(500).json({message: err.message})
+    }
 })
 
 export default users_router

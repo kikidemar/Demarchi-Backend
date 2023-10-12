@@ -27,8 +27,14 @@ document.getElementById('user').addEventListener('submit', async (event) => {
         newPassword: newPassword,
         confirmPassword: confirmPassword,
       }),
-    });
+    })
+    const res = await response.json(); // Parsea la respuesta JSON aquí
+
+    alert(res.message);
+    if (res.message === 'Password reset successful') {
+      window.location.href = 'http://localhost:8080/login.html';
+    }
   } catch (error) {
-    console.log ("An error occurred. Please try again later.")
+    console.log ("An error occurred. Please try again later.");
   }
-});
+})
