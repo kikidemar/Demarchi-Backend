@@ -8,7 +8,7 @@ import isAdmin from "../../middlewares/isAdmin.js";
 const users_router = Router()
 
 
-users_router.get("/premium/:uid",passport_call('jwt'), isAdmin, async (req, res, next) => {
+users_router.get("/premium/:uid", passport_call('jwt'), isAdmin, async (req, res, next) => {
     try {
         const { uid } = req.params
 
@@ -47,7 +47,7 @@ users_router.get("/premium/:uid",passport_call('jwt'), isAdmin, async (req, res,
     }
 })
 
-users_router.delete("/:uid",passport_call('jwt'), isAdmin, async (req, res, next) => {
+users_router.delete("/:uid", passport_call('jwt'), isAdmin, async (req, res, next) => {
     try {
         await Users.findByIdAndDelete(req.params.uid)
         res.status(200).json({
@@ -55,33 +55,33 @@ users_router.delete("/:uid",passport_call('jwt'), isAdmin, async (req, res, next
             message: 'User deleted successfully'
         })
     } catch (err) {
-        res.status(500).json({message: err.message})
+        res.status(500).json({ message: err.message })
     }
 })
 
 
-users_router.get('/',passport_call('jwt'), isAdmin, async (req, res, next) => {
+users_router.get('/', passport_call('jwt'), isAdmin, async (req, res, next) => {
     try {
         const users = await Users.find({}, 'name email role').lean()
         return res.status(200).json(users)
     } catch (err) {
-        res.status(500).json({message: err.message})
+        res.status(500).json({ message: err.message })
     }
 })
 
 
-users_router.delete('/',passport_call('jwt'), isAdmin, async (req, res) => {
+users_router.delete('/', passport_call('jwt'), isAdmin, async (req, res) => {
     try {
-        
+
         const users = await Users.find();
 
         const deletedUsers = []
         const notDeletedUsers = []
 
-        const deleteTime = 1000*60*60*24* (2) 
-        users.forEach( user => {
+        const deleteTime = 1000 * 60 * 60 * 24 * (2)
+        users.forEach(user => {
             const connect = new Date(user.last_connection)
-            if (connect.getTime() <= Date.now()-deleteTime ) {
+            if (connect.getTime() <= Date.now() - deleteTime) {
                 deletedUsers.push(user)
                 // console.log(deletedUsers)
             } else {
@@ -89,33 +89,41 @@ users_router.delete('/',passport_call('jwt'), isAdmin, async (req, res) => {
             }
         })
 
-        for (const user of deletedUsers) {
-            try {
-                await sendmail(
-                    `${user.email}`,
-                    'Account deleted due inactivity',
-                    `<h1>Your account was deleted due 2 days of inactivity</h1>`
-                )
+        if (deletedUsers.length === 0) {
+            res.status(500).json({
+                success: false,
+                message: 'There are no users inactive for delete'
+            })
+        } else {
 
-                await Users.findByIdAndDelete(user._id)
+            for (const user of deletedUsers) {
+                try {
+                    await sendmail(
+                        `${user.email}`,
+                        'Account deleted due inactivity',
+                        `<h1>Your account was deleted due 2 days of inactivity</h1>`
+                    )
 
-            } catch (err) {
-                console.error(`Conflict when sending email to ${user.mail}: ${err}`)
+                    await Users.findByIdAndDelete(user._id)
+
+                } catch (err) {
+                    console.error(`Conflict when sending email to ${user.mail}: ${err}`)
+                }
             }
+
+            res.status(200).json({
+                success: true,
+                message: 'Inactive users were deleted successfully'
+            })
+
         }
-
-        res.status(200).json({
-            success: true,
-            message: 'Inactive were users deleted successfully'
-        })
-
     } catch (error) {
         console.error(error);
         res.status(500).json({
             error: 'Error'
         })
     }
-});
+})
 
 
 export default users_router

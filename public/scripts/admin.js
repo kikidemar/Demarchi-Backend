@@ -116,3 +116,29 @@ document.addEventListener('DOMContentLoaded', async function () {
   }
 
 })
+
+async function deleteInactiveUser(button) {
+  try {
+    const confirmMessage = 'Are you sure you want to delete all inactive users who have not logged in for 2 days?'
+
+    if (confirm(confirmMessage)) {
+      const response = await fetch(`/api/users`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+      });
+
+      const data = await response.json();
+      console.log(data)
+      if (data.success) {
+        alert(data.message);
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    } else {
+      console.log('User canceled delete');
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
