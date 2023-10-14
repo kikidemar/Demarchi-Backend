@@ -4,7 +4,7 @@ const cid = params.get('cid')
 
 async function fetchCart() {
     try {
-        let response = await fetch('/api/carts/'+cid)
+        let response = await fetch('/api/carts/' + cid)
         response = await response.json()
         // console.log(response)
         let templates = ''
@@ -12,8 +12,8 @@ async function fetchCart() {
         let products = response.products
         // console.log(products[0])
         for (let prod of products) {
-            if (prod.units>0) {
-                let res = await fetch('/api/products/'+prod.product)
+            if (prod.units > 0) {
+                let res = await fetch('/api/products/' + prod.product)
                 res = await res.json()
                 console.log(res)
                 total += prod.units * res.product.price
@@ -38,7 +38,7 @@ async function fetchCart() {
             </div>
         `
         document.getElementById('cart').innerHTML = templates
-        
+
 
         const checkoutButton = document.getElementById('checkoutButton');
 
@@ -59,7 +59,7 @@ async function fetchCart() {
                     if (response.status === 201) {
                         // Se creó el ticket exitosamente, puedes redirigir o mostrar un mensaje de éxito
                         alert('Ticket creado exitosamente.');
-                        
+
                     } else {
                         // Manejo de errores si la creación del ticket falla
                         const responseData = await response.json();
@@ -74,7 +74,7 @@ async function fetchCart() {
         console.log(error);
     }
 }
-if(cid !== '1')fetchCart()
+if (cid !== '1') fetchCart()
 else alert('You need to login')
 
 async function addUnits(pid) {
@@ -84,9 +84,9 @@ async function addUnits(pid) {
         })
         response = await response.json()
         //console.log(response);
-        if (response.message==='Cart updated') {
-            location.replace('/cart.html?cid='+cid)
-        }else {
+        if (response.message === 'Cart updated') {
+            location.replace('/cart.html?cid=' + cid)
+        } else {
             alert(response.message)
         }
     } catch (error) {
@@ -101,34 +101,96 @@ async function quitUnits(pid) {
         })
         response = await response.json()
         //console.log(response);
-        if (response.message==='Cart updated') {
-            location.replace('/cart.html?cid='+cid)
-        }else {
+        if (response.message === 'Cart updated') {
+            location.replace('/cart.html?cid=' + cid)
+        } else {
             alert(response.message)
         }
     } catch (error) {
         console.log(error);
     }
-}      
+}
 
 document.addEventListener('DOMContentLoaded', function () {
     let cid = getCookieValue('cid')
-            function getCookieValue(cookieName) {
-                const cookies = document.cookie.split('; ');
-                for (const cookie of cookies) {
-                    const [name, value] = cookie.split('=');
-                    if (name === cookieName) {
-                        let decodedValue = decodeURIComponent(value)
-                        decoded=decodedValue.slice(2)
-                        return JSON.parse(decoded)
-                    }
-                }
-                return null
+    function getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                let decodedValue = decodeURIComponent(value)
+                decoded = decodedValue.slice(2)
+                return JSON.parse(decoded)
             }
+        }
+        return null
+    }
     if (cid) {
-      const cartLink = document.getElementById('quantity')
-      cartLink.href = `/cart.html?cid=${cid}`
+        const cartLink = document.getElementById('quantity')
+        cartLink.href = `/cart.html?cid=${cid}`
     }
 
-    
-    })
+
+})
+
+document.addEventListener('DOMContentLoaded', async function () {
+    let userRole = getCookieValue('role');
+    function getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                let decodedValue = decodeURIComponent(value);
+                return decodedValue;
+            }
+        }
+        return null;
+    }
+
+    if (userRole === 'admin') {
+        adminTab.style.display = 'block';
+    }
+
+});
+
+document.addEventListener('DOMContentLoaded', async function () {
+    let userRole = getCookieValue('role');
+    function getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                let decodedValue = decodeURIComponent(value);
+                return decodedValue;
+            }
+        }
+        return null;
+    }
+
+    if (userRole === 'admin' || userRole === 'premium') {
+        newTab.style.display = 'block';
+    }
+
+})
+
+document.addEventListener('DOMContentLoaded', async function () {
+    let userEmail = getCookieValue('email');
+    function getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                let decodedValue = decodeURIComponent(value);
+                return decodedValue;
+            }
+        }
+        return null;
+    }
+
+    if (userEmail) {
+        registerTab.style.display = 'none';
+    } else {
+        registerTab.style.display = 'block';
+    }
+
+})

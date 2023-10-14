@@ -3,7 +3,8 @@ import jwt from "jsonwebtoken"
 export default (req,res,next)=> {
     const payload = {
         email: req.body.email,
-        cid: req.body.cid
+        cid: req.body.cid,
+        role: req.body.role
     }
     let token = jwt.sign(
         payload,
