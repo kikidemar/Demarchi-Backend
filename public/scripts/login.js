@@ -108,10 +108,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     return null;
   }
 
+  let elementos = document.querySelectorAll('.logOut')
+
   if (userEmail) {
     registerTab.style.display = 'none';
+    elementos.forEach(element => {
+      element.style.display = 'none';
+    })
   } else {
     registerTab.style.display = 'block';
+    elementos.forEach(element => {
+      element.style.display = 'block';
+    })
   }
 
 })
