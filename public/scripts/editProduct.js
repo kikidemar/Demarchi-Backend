@@ -31,7 +31,7 @@ selector.addEventListener('click', (event) => {
     }
 
     if (Object.keys(updatedFields).length === 0) {
-        alert('No hay cambios para actualizar.');
+        alert('There are no changes to update');
         return;
     }
     
@@ -48,15 +48,6 @@ selector.addEventListener('click', (event) => {
             }
         })
 })
-
-
-
-
-
-
-
-
-
 
 document.addEventListener('DOMContentLoaded', async function () {
   let userRole = getCookieValue('role');
