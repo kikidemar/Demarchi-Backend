@@ -5,6 +5,7 @@ import User from '../dao/Mongo/models/User.js'
 import jwt from "passport-jwt"
 import cartController from '../controllers/cart.controller.js'
 import Cart from '../dao/Mongo/models/Cart.js'
+import sendMail from '../utils/sendMail.js'
 
 const { GH_CLIENT_ID, GH_CLIENT_SECRET } = process.env
 const callback = "http://localhost:8080/api/auth/github/callback"
@@ -25,13 +26,14 @@ export default function () {
         { passReqToCallback: true, usernameField:'email' },
         async (req, username, password, done) => {
           try {
-              let one = await User.findOne({ email: username})  // tambien se puede pasar email:req.body.email
+              let one = await User.findOne({ email: username}) 
               if (!one) {
                 let cart = await Cart.create({products: []})
                 let user = await User.create({
                   ...req.body,
                   cid: cart._id
                 })
+                sendMail(req.body.email, 'Thanks for registering', '<h1>Thanks for creating an account in our webside, be welcome!</h1>')
                 delete user.password
                 return done(null, user)
               }
@@ -66,12 +68,12 @@ passport.use(
   )
 )
 
-passport.use(    // esta estrategia solo sirve para autenticar usuarios
+passport.use(  
   'jwt',
   new jwt.Strategy(
     { secretOrKey:process.env.SECRET_JWT,jwtFromRequest:jwt.ExtractJwt.fromExtractors([(req)=>req?.cookies['token']])},
     async(jwt_payload, done) => {
-      // jwt_payload es el resultado del desencriptamiento del token
+
       try {
           let one = await User.findOne({ email: jwt_payload.email})
           let cid= one.cid
@@ -100,7 +102,7 @@ passport.use(
       { clientID: GH_CLIENT_ID, clientSecret: GH_CLIENT_SECRET, callbackURL: callback },
       async(accessToken, refreshToken, profile, done)=> {
         try {
-          //console.log(profile)
+
           let one = await User.findOne({ email:profile._json.login})
           if (one) {
             return done(null, one)
