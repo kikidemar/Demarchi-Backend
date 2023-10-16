@@ -13,8 +13,8 @@ class ProductDaoMongo {
     return await this.model.findById(id)
   }
 
-  create = async({title, description, price, thumbnail, stock, code}) => {
-    return await this.model.create({title, description, price, thumbnail, stock, code})
+  create = async({title, description, price, thumbnail, stock, owner}) => {
+    return await this.model.create({title, description, price, thumbnail, stock, owner})
   }
 
   update = async(id,data) => {

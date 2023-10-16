@@ -4,7 +4,8 @@ export default (req,res,next)=> {
     const payload = {
         email: req.body.email,
         cid: req.body.cid,
-        role: req.body.role
+        role: req.body.role,
+        _id: req.body._id
     }
     let token = jwt.sign(
         payload,

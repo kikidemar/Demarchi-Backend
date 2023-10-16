@@ -1,6 +1,22 @@
 let selector = document.getElementById('newProduct')
 selector.addEventListener('click', (event) => {
     event.preventDefault()
+
+    function getCookieValue(cookieName) {
+        const cookies = document.cookie.split('; ');
+        for (const cookie of cookies) {
+            const [name, value] = cookie.split('=');
+            if (name === cookieName) {
+                let decodedValue = decodeURIComponent(value);
+                decoded = decodedValue.slice(2);
+                return JSON.parse(decoded);
+            }
+        }
+        return null;
+    }
+
+    let uid = getCookieValue('_id');
+    let owner = uid
     let title = document.getElementById('productTitle').value
     let description = document.getElementById('productDescription').value
     let price = document.getElementById('productPrice').value
@@ -10,7 +26,7 @@ selector.addEventListener('click', (event) => {
     fetch('/api/products', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, description, price, stock, thumbnail })
+        body: JSON.stringify({ title, description, price, stock, thumbnail, owner })
     })
         .then(res => res.json())
         .then(res => {

@@ -3,6 +3,8 @@ const params = new URLSearchParams(location.search)
 const id = params.get('id')
 //console.log(id)
 
+document.addEventListener('DOMContentLoaded', addClass)
+
 fetch('/api/products/' + id)
     .then(res => res.json())
     // .then(res=>console.log(res))
@@ -20,12 +22,76 @@ fetch('/api/products/' + id)
                 <p class="card-text text-center mb-2">${res.product.description}</p>
                 <input type="number" class="text-center" style="width: 150px" value="0" min="0" max=${res.product.stock} name="quantity" id=${res.product._id}>
                 <input id="add-to-cart" type="button" onclick='addToCart()' style="width: 150px" class="btn btn-primary mt-2" value="add to cart!">
+                <button type="button" id="deleteButton" style="width: 150px; display: none" class="btn btn-danger mt-2">Delete Item</button>
+                <a href='./editProduct.html?id=${res.product._id}' id="editButton" style="width: 150px; display: none" class="btn btn-warning mt-2">Edit Item</a>
             </div>
         </div>
         `
-        document.getElementById('product').innerHTML = template
+
+        document.getElementById('product').innerHTML = template;
+
+        const main = document.getElementById('product')
+        const deleteButton = document.getElementById('deleteButton')
+        const editButton = document.getElementById('editButton')
+
+        if (main.classList.contains('addButton'))
+            deleteButton.style.display = 'block',
+            editButton.style.display = 'block'
+        else 
+        deleteButton.style.display = 'none',
+        editButton.style.display = 'none'
+
+
+        document.getElementById('deleteButton').addEventListener('click', (event) => {
+            event.preventDefault()
+            fetch('/api/products/' + id, {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json'
+                },
+              body: JSON.stringify({ owner: res.product.owner }) // Aquí defines ownerValue
+              })
+              .then(res => res.json())
+              .then(res => {
+                alert(res.message)
+                if (res.message === `product deleted`)
+                    window.location.href = 'http://localhost:8080/products.html'
+              })
+              .catch(err => console.log(err))
+          })
     })
     .catch(err => console.log(err))
+
+
+    function addClass() {
+        let userRole = getCookieValue('role');
+        function getCookieValue(cookieName) {
+            const cookies = document.cookie.split('; ');
+            for (const cookie of cookies) {
+                const [name, value] = cookie.split('=');
+                if (name === cookieName) {
+                    let decodedValue = decodeURIComponent(value);
+                    return decodedValue;
+                }
+            }
+            return null;
+        }
+    
+        if (userRole === 'admin' || userRole === 'premium') {
+            let main = document.getElementById('product');
+            if (main) {
+                main.classList.add('addButton') // Mostrar el botón si existe
+            }
+        }
+    }
+    
+    // Llama a la función después de que el documento se haya cargado completamente
+   ;
+
+
+
+
+
 
 async function addToCart() {
     console.log('ok');
@@ -53,7 +119,6 @@ async function addToCart() {
             })
             response = await response.json()
             if (response.message === "Cart updated") {
-                //socket.emit('upd_cart',null)
                 location.replace('/cart.html?cid=' + cid)
             } else {
                 alert(response.message)
@@ -148,3 +213,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
   
   })
+
+//   document.getElementById('deleteButton').addEventListener('click', (event) => {
+//     event.preventDefault()
+//     fetch('/api/products/' + id, {
+//       method: 'DELETE'
+//     })
+//       .then(res => res.json())
+//       .then(res => {
+//         alert(res.message)
+//         // if (res.message === 'Siggned out!')
+//           location.reload()
+//       })
+//       .catch(err => console.log(err))
+//   })

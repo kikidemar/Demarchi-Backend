@@ -10,13 +10,13 @@ const product_router = Router()
 
 product_router.get('/', passport_call('jwt'), ProductController.getProducts)
 
-product_router.post('/',passport_call('jwt'), isPremium, ProductController.createProduct)
+product_router.post('/', passport_call('jwt'), isPremium, ProductController.createProduct)
 
 product_router.get('/:pid', ProductController.getProduct)
 
-product_router.put('/:pid', ProductController.updateProduct)
+product_router.put('/:pid', passport_call('jwt'), isPremium, ProductController.updateProduct)
 
-product_router.delete('/:pid', ProductController.deleteProduct)
+product_router.delete('/:pid', passport_call('jwt'), isPremium, ProductController.deleteProduct)
 
 export default product_router
 

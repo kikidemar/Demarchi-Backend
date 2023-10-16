@@ -22,13 +22,13 @@ class AuthController {
       // const {email} = req.body
       // req.session.email = email
       // req.session.role = req.user.role
-      const {cid} = req.user
-      const {email} =req.user
-      const {role} = req.user
+      const {cid, _id, email, role} = req.user
+
       return res.status(200).cookie('token',req.token,{maxAge:60*60*1000})
                             .cookie('cid', cid, { maxAge: 60 * 60 * 1000 })
                             .cookie('email', email,{ maxAge: 60 * 60 * 1000 })
                             .cookie('role', role,{ maxAge: 60 * 60 * 1000 })
+                            .cookie('_id', _id,{ maxAge: 60 * 60 * 1000 })
                             .json({
                               success: true,
                               message: 'User logged in!'
@@ -44,7 +44,7 @@ class AuthController {
     message: 'Error auth'
   })}
 
-  signOut = (req,res)=> res.status(200).clearCookie('token').clearCookie('role').clearCookie('cid').clearCookie('email').json({
+  signOut = (req,res)=> res.status(200).clearCookie('token').clearCookie('_id').clearCookie('role').clearCookie('cid').clearCookie('email').json({
     success:true,
     message: 'Siggned out!'
   })

@@ -7,7 +7,7 @@ fetch('/api/products')
       const templates = products.map(each => {
         if (each.stock > 0) {
           return `
-            <div class="card m-2" style="width: 13rem;">
+            <div class="card m-2" style="width: 13rem">
               <img src="${each.thumbnail}" class="card-img-top p-3" alt="${each.description}">
               <div class="card-body d-flex flex-column justify-content-center">
                 <h5 class="card-title text-center">${each.title}</h5>

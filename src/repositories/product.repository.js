@@ -13,8 +13,8 @@ class ProductRepository {
     return result
   }
 
-  createProduct = async({title, description, price, thumbnail, stock, code}) => {
-    let result = await this.dao.create({title, description, price, thumbnail, stock, code})
+  createProduct = async({title, description, price, thumbnail, stock, owner}) => {
+    let result = await this.dao.create({title, description, price, thumbnail, stock, owner})
     return result
   }
 
