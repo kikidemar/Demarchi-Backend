@@ -19,32 +19,3 @@ product_router.put('/:pid', passport_call('jwt'), isPremium, ProductController.u
 product_router.delete('/:pid', passport_call('jwt'), isPremium, ProductController.deleteProduct)
 
 export default product_router
-
-
-
-// product_router.get('/', async (req, res, next) => {
-//   try {
-//       const productsPerPage = 6
-
-//       const defaultPage = 1
-//       const page = req.query.page ? parseInt(req.query.page) : defaultPage
-//       const filter = req.query.filter ? req.query.filter : ''
-
-//       const query = {}
-//       if (filter) {
-//           query.title = { $regex: new RegExp(filter, 'i') }
-//       }
-
-      
-//       const products = await Product.paginate(query, {
-//           page: page,
-//           limit: productsPerPage
-//       })
-
-//       console.log(products)
-
-//       return res.status(200).json(products)
-//   } catch (error) {
-//       next(error)
-//   }
-// })

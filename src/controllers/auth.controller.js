@@ -1,3 +1,10 @@
+import User from "../dao/Mongo/models/User.js"
+import sendMail from '../utils/sendMail.js'
+import config from '../config/config.js'
+import Jwt from 'jsonwebtoken'
+import { logger } from '../config/logger.js'
+import { compareSync, genSaltSync, hashSync } from 'bcrypt'
+
 class AuthController {
 
   register = async(req,res,next)=> {
@@ -56,6 +63,88 @@ class AuthController {
     })
     return res.status(200).json(data)
   }
+
+  forgot_pass = async (req,res)=> {
+    const { email } = req.body;
+    
+    let userDB = await User.findOne({ email: email })
+    if (!userDB) {
+      return res.status(404).send("User not found");
+    }
+  
+    
+    const token = Jwt.sign({ email: userDB.email }, config.privateKeyJwt, { expiresIn: "1h" });
+  
+  
+    const subject = 'Reset Password'
+    const html = `
+    <p>Welcome ${userDB.name}</p>
+    <p>Click <a href='http://localhost:8080/reset-pass.html?token=${token}'>Here</a> to reset password</p>
+    <p>This link expires in one hour</p>
+    `
+    await sendMail(email, subject, html)
+    res.send({status: 'success', message: 'Mail sent successfully'})
+  
+  }
+
+  reset_pass = async (req, res) => {
+    try {
+      const token = req.body.token;
+      const newPassword = req.body.newPassword;
+      const confirmPassword = req.body.confirmPassword;
+  
+      Jwt.verify(token, config.privateKeyJwt, async (err, credentials) => {
+        if (err) {
+          return res.status(401).json({message:'Invalid or expired token'});
+        }
+  
+        try {
+          let user = await User.findOne({ email: credentials.email });
+          if (!user) {
+            return res.status(404).json({message:'User not found'});
+          }
+  
+          if (newPassword !== confirmPassword) {
+            return res.status(400).json({message:'Passwords do not match'});
+          }
+          
+          if (compareSync(newPassword, user.password)) return res.status(400).json({message: 'The new password cannot be the same as the old one'})
+  
+          user.password = hashSync(newPassword, genSaltSync())
+          await user.save();
+  
+          res.json({message:'Password reset successful'});
+        } catch (error) {
+          logger.error(error.message);
+          res.status(500).json({message:'An error occurred on the server'});
+        }
+      });
+    } catch (error) {
+      logger.error(error.message);
+      res.status(500).json({message:'An error occurred on the server'});
+    }
+  }
+
+
+  reset_password = (req, res) => {
+    const token = req.query.token
+    
+  
+    Jwt.verify(token, config.privateKeyJwt,  (err, credencials) => {
+      if (err) {
+        return res.status(401).send("Invalid or expired token");
+      }
+  
+      // Render the password reset form
+      res.render("reset-pass", { token });
+    });
+  }
+
+  fail_github = (req,res)=> res.status(400).json({
+    success: false,
+    message:'Error auth'
+  })
+
 
 }
 

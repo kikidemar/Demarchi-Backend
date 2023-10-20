@@ -1,23 +1,11 @@
 import { Router } from "express";
-import sendmail from "../../utils/sendMail.js";
-import sendWhatsApp from "../../utils/sendWhatsApp.js";
+import MailingController from "../../controllers/mailing.controller.js";
 
 
 const mailing_router = Router()
 
-mailing_router.get('/', async (req,res) => {
-  await sendmail(
-    'demarchi.christiann@gmail.com',
-    'Mail de prueba',
-    `<h1>Esto es un correo de prueba</h1>`
-  )
-  res.send('mail enviado')
-})
+mailing_router.get('/', MailingController.sendMail)
 
-mailing_router.get('/wa', async (req,res) => {
-  await sendWhatsApp('chris', 'demar')
-  res.send('sms enviado')
-
-})
+mailing_router.get('/wa', MailingController.sendWhatsApp)
 
 export default mailing_router

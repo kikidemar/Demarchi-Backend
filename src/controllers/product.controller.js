@@ -1,4 +1,4 @@
-import  productService  from '../service/index.js'
+import  { productService }  from '../service/index.js'
 import sendMail from '../utils/sendMail.js'
 import Users from '../dao/Mongo/models/User.js'
 
